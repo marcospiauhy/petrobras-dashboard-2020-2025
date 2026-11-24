@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Petrobras 2020–2025 · Dashboard de Indicadores</title>
+<style>
+:root{
+  --g900:#002A1E; --g800:#003B2A; --g700:#00573C; --g600:#006B47; --g500:#008542; --g400:#1DA35A; --g100:#E3F2E9; --g50:#F1F8F4;
+  --y500:#FDC82F; --y600:#E0A800; --y100:#FFF4D1; --y-ink:#7A5A00;
+  --ink:#16241F; --ink2:#43534D; --muted:#76857F; --line:#E3EAE6;
+  --body:linear-gradient(180deg,#E6F2EB 0%,#F3F8F5 360px,#F6F9F7 100%);
+  --top:linear-gradient(115deg,#002A1E 0%,#00573C 38%,#008542 78%,#1DA35A 100%);
+  --card:#FFFFFF; --card-b:#EDF2EF; --field:#FFFFFF; --field-b:#CFDCD5; --th:#F1F8F4; --hover:#FAFCFB;
+  --fbar:rgba(255,255,255,.92); --tab-on:#F3F8F5; --tab-on-ink:#00573C; --accent-ink:#00573C;
+  --ins:linear-gradient(135deg,#fff 0%,#F4FAF6 60%,#FFF9E6 100%); --ins-b:#E5EEE9;
+  --kpi:linear-gradient(140deg,#003B2A 0%,#006B47 55%,#008542 100%); --kpi-light:linear-gradient(140deg,#fff,#F3FAF6);
+  --ok:#0B7A3B; --ok-bg:#E3F2E9; --err:#B42318; --err-bg:#FDECEA; --link:#007A3D;
+  --blue-chip:#E7EEF7; --blue-ink:#1F4E7A;
+  --radius:14px; --shadow:0 1px 2px rgba(0,40,25,.06),0 10px 28px rgba(0,60,40,.07);
+  --font:"Segoe UI",Roboto,"Inter","Helvetica Neue",Arial,sans-serif; --mono:ui-monospace,"Cascadia Code",Consolas,"Courier New",monospace;
+  color-scheme:light;
+}
+[data-theme="dark"]{
+  --ink:#E7F1EC; --ink2:#B9CAC2; --muted:#8DA097; --line:#22392F;
+  --g100:#173A2B; --g50:#143027; --y100:#3A3110; --y-ink:#FFE08A;
+  --body:linear-gradient(180deg,#06150F 0%,#0A1D17 380px,#0B1C17 100%);
+  --top:linear-gradient(115deg,#00110C 0%,#002E21 40%,#005A33 80%,#0B7A44 100%);
+  --card:#122520; --card-b:#1D3A31; --field:#0E1F1A; --field-b:#2E4A40; --th:#163029; --hover:#17302A;
+  --fbar:rgba(9,24,19,.92); --tab-on:#0A1D17; --tab-on-ink:#7FE0A8; --accent-ink:#7FE0A8;
+  --ins:linear-gradient(135deg,#132A23 0%,#10261F 60%,#2A2410 100%); --ins-b:#244238;
+  --kpi:linear-gradient(140deg,#002A1E 0%,#00543A 55%,#0A7A45 100%); --kpi-light:linear-gradient(140deg,#15322A,#122520);
+  --ok:#7FE0A8; --ok-bg:#173A2B; --err:#FFB4A8; --err-bg:#3A1D19; --link:#6FD69C;
+  --blue-chip:#1A2F45; --blue-ink:#9CC7F0;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px rgba(0,0,0,.30);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font);color:var(--ink);background:var(--body);min-height:100vh;font-size:14px;line-height:1.45;transition:background-color .3s}
+a{color:var(--link)}
+code{font-family:var(--mono)}
+/* ---------- header ---------- */
+.top{background:var(--top);color:#fff;position:relative}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--y500),var(--y600) 40%,var(--g400) 100%)}
+.top-in{max-width:1440px;margin:0 auto;padding:18px 28px 0}
+.brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{background:#fff;border-radius:10px;padding:4px 7px;display:flex;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,.25);flex:none}.logo img{display:block;height:47px;width:auto}
+.brand h1{margin:0;font-size:21px;font-weight:700;letter-spacing:.2px}
+.brand p{margin:2px 0 0;font-size:12.5px;opacity:.85}
+.brand .spacer{flex:1}
+.pill-info{font-size:11.5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);padding:5px 10px;border-radius:999px}
+.chip-data{font-size:11.5px;font-weight:700;background:var(--y500);color:#003B2A;padding:5px 10px;border-radius:999px;cursor:pointer;border:0;font-family:inherit}
+.theme-btn{font:inherit;font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:6px 12px;border-radius:999px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.theme-btn:hover{background:rgba(255,255,255,.24)}
+nav.tabs{display:flex;gap:4px;margin-top:16px;overflow-x:auto;scrollbar-width:thin}
+nav.tabs button{font:inherit;font-size:13px;font-weight:600;color:rgba(255,255,255,.82);background:transparent;border:0;padding:10px 14px 12px;border-radius:10px 10px 0 0;cursor:pointer;white-space:nowrap}
+nav.tabs button:hover{background:rgba(255,255,255,.10);color:#fff}
+nav.tabs button.on{background:var(--tab-on);color:var(--tab-on-ink)}
+nav.tabs button .n{display:inline-block;font-size:10.5px;opacity:.7;margin-right:6px}
+/* ---------- filter bar ---------- */
+.fbar{position:sticky;top:0;z-index:20;background:var(--fbar);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);box-shadow:0 4px 14px rgba(0,50,30,.06)}
+.fbar-in{max-width:1440px;margin:0 auto;padding:10px 28px;display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+.f{display:flex;flex-direction:column;gap:4px}
+.f label{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+select,input[type=search]{font:inherit;font-size:13px;color:var(--ink);padding:6px 10px;border:1px solid var(--field-b);border-radius:9px;background:var(--field);min-height:32px}
+select:focus,input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--y500);outline-offset:1px}
+.seg{display:inline-flex;border:1px solid var(--field-b);border-radius:9px;overflow:hidden;background:var(--field)}
+.seg button{font:inherit;font-size:12.5px;font-weight:600;border:0;background:transparent;padding:6px 12px;cursor:pointer;color:var(--ink2);min-height:32px}
+.seg button+button{border-left:1px solid var(--field-b)}
+.seg button.on{background:linear-gradient(135deg,var(--g700),var(--g500));color:#fff}
+.range{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.btn{font:inherit;font-size:12.5px;font-weight:600;border:1px solid var(--field-b);background:var(--field);color:var(--accent-ink);padding:6px 12px;border-radius:9px;cursor:pointer;min-height:32px}
+.btn:hover{background:var(--g50)}
+.btn.primary{background:linear-gradient(135deg,var(--g700),var(--g500));color:#fff;border-color:transparent}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.warn{color:var(--err)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.fbar .hint{font-size:11.5px;color:var(--muted);margin-left:auto;align-self:center}
+/* ---------- layout ---------- */
+main{max-width:1440px;margin:0 auto;padding:20px 28px 40px}
+.page{display:none}
+.page.on{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;align-items:start}
+.w2{grid-column:span 2}.w3{grid-column:span 3}.w4{grid-column:span 4}.w6{grid-column:span 6}
+@media(max-width:1100px){.w2{grid-column:span 3}.w4{grid-column:span 6}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.w2,.w3,.w4,.w6{grid-column:span 1}.top-in,.fbar-in,main{padding-left:14px;padding-right:14px}}
+/* ---------- banners ---------- */
+.banner{position:relative;border-radius:18px;overflow:hidden;min-height:150px;margin-bottom:16px;color:#fff;display:flex;align-items:flex-end;background-color:#00573C;background-size:cover;background-position:center;box-shadow:var(--shadow)}
+.banner .in{position:relative;padding:22px 26px;max-width:880px}
+.banner h2{margin:0;font-size:24px;font-weight:700}
+.banner p{margin:6px 0 0;font-size:13.5px;opacity:.92}
+.banner .credit,.hero .credit{position:absolute;right:12px;bottom:8px;font-size:10.5px;opacity:.75}
+.hero{position:relative;border-radius:20px;overflow:hidden;min-height:260px;margin-bottom:16px;color:#fff;background:linear-gradient(120deg,#002A1E,#008542);box-shadow:var(--shadow)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s ease}
+.hero img.on{opacity:1}
+.hero .ov{position:absolute;inset:0;background:linear-gradient(100deg,rgba(0,42,30,.94) 0%,rgba(0,87,60,.80) 42%,rgba(0,133,66,.35) 75%,rgba(253,200,47,.18) 100%)}
+.hero .in{position:relative;padding:30px 32px;max-width:760px}
+.hero .eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:var(--y500);color:#003B2A;padding:4px 10px;border-radius:999px}
+.hero h2{font-size:30px;line-height:1.15;margin:12px 0 8px}
+.hero p{margin:0;font-size:14.5px;opacity:.93}
+.stories{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.story{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:10px 12px;font-size:12.5px}
+.story b{display:block;color:var(--y500);font-size:12px;margin-bottom:2px}
+@media(max-width:900px){.stories{grid-template-columns:1fr}}
+/* ---------- KPI tiles ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{position:relative;border-radius:16px;padding:14px 16px 12px;color:#fff;background:var(--kpi);box-shadow:var(--shadow);overflow:hidden}
+.kpi::after{content:"";position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(253,200,47,.25),transparent 70%)}
+.kpi .k{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;opacity:.8;font-weight:600}
+.kpi .v{font-size:26px;font-weight:700;margin:4px 0 2px;letter-spacing:-.3px}
+.kpi .u{font-size:12px;opacity:.75;font-weight:500;margin-left:4px}
+.kpi .d{font-size:12px;display:flex;gap:10px;flex-wrap:wrap;opacity:.95}
+.kpi .d .good{color:#A8F0C4}.kpi .d .bad{color:#FFC2B3}.kpi .d .neu{color:#E6EEE9}
+.kpi svg{display:block;margin-top:8px;width:100%;height:36px}
+.kpis.light .kpi{background:var(--kpi-light);color:var(--ink);border:1px solid var(--line)}
+.kpis.light .kpi .d .good{color:var(--ok)}.kpis.light .kpi .d .bad{color:var(--err)}.kpis.light .kpi .d .neu{color:var(--muted)}
+/* ---------- cards ---------- */
+.card{position:relative;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px 12px;border:1px solid var(--card-b);overflow:hidden;min-width:0}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--g500),var(--g400) 55%,var(--y500))}
+.card header{display:flex;align-items:flex-start;gap:8px}
+.card h3{margin:2px 0 0;font-size:14.5px;font-weight:700;color:var(--ink);flex:1}
+.card .sub{margin:2px 0 6px;font-size:12px;color:var(--muted)}
+.card .act{display:flex;gap:4px}
+.card .act button{font:inherit;font-size:11px;font-weight:600;border:1px solid var(--field-b);background:var(--field);color:var(--accent-ink);padding:3px 8px;border-radius:7px;cursor:pointer}
+.card .act button:hover,.card .act button.on{background:var(--g100)}
+.chart{width:100%;height:300px}
+.chart.tall{height:400px}.chart.xtall{height:460px}.chart.short{height:240px}
+.note{margin:6px 0 0;font-size:11.5px;color:var(--muted)}
+.note b{color:var(--ink2)}
+.tbl{max-height:300px;overflow:auto;margin-top:6px;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+th{position:sticky;top:0;background:var(--th);color:var(--ink2);font-weight:700;z-index:1}
+th:first-child,td:first-child{text-align:left}
+tr:hover td{background:var(--hover)}
+/* ---------- insights ---------- */
+.insights{background:var(--ins);border:1px solid var(--ins-b);border-left:4px solid var(--y500);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;box-shadow:var(--shadow)}
+.insights h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--accent-ink)}
+.insights ul{margin:0;padding-left:18px;display:grid;grid-template-columns:1fr 1fr;gap:4px 28px}
+.insights li{font-size:13px;color:var(--ink2)}
+@media(max-width:900px){.insights ul{grid-template-columns:1fr}}
+.pfilters{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:16px;box-shadow:var(--shadow)}
+.pfilters .t{font-size:11px;font-weight:700;color:var(--accent-ink);text-transform:uppercase;letter-spacing:.6px;align-self:center;margin-right:4px}
+.chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);min-height:32px;cursor:pointer}
+.chk input{accent-color:var(--g500);width:16px;height:16px}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px}
+.badge.r{background:var(--g100);color:var(--accent-ink)}.badge.c{background:var(--y100);color:var(--y-ink)}.badge.m{background:var(--blue-chip);color:var(--blue-ink)}
+.gallery{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.gallery figure{margin:0;position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:linear-gradient(135deg,#00573C,#008542)}
+.gallery img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.gallery figure:hover img{transform:scale(1.06)}
+.gallery figcaption{position:absolute;left:0;right:0;bottom:0;padding:16px 8px 6px;font-size:11px;color:#fff;background:linear-gradient(0deg,rgba(0,42,30,.85),transparent)}
+@media(max-width:900px){.gallery{grid-template-columns:repeat(3,1fr)}}
+.meth-tools{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px}
+.meth .tbl{max-height:560px}
+.meth table{min-width:2100px}.meth th{text-align:left}
+.meth td.l{text-align:left;white-space:normal;min-width:240px;max-width:340px;color:var(--ink2);vertical-align:top}.meth td{vertical-align:top}
+.list{margin:0;padding-left:18px;color:var(--ink2);font-size:13px}
+.list li{margin:4px 0}
+/* ---------- dados & SQL ---------- */
+.sql-tools{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px}
+textarea.sql{width:100%;min-height:190px;font:13px/1.55 var(--mono);background:var(--field);color:var(--ink);border:1px solid var(--field-b);border-radius:10px;padding:10px 12px;resize:vertical;tab-size:2}
+.msg{font-size:12.5px;margin:8px 0;padding:8px 12px;border-radius:9px;white-space:pre-wrap}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}.msg.err{background:var(--err-bg);color:var(--err)}.msg.info{background:var(--g50);color:var(--ink2)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:12.5px;margin:4px 0 12px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;color:var(--ink);font-weight:600}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.hist{font:11.5px/1.5 var(--mono);color:var(--ink2);max-height:180px;overflow:auto;border:1px solid var(--line);border-radius:9px;padding:6px 10px;margin:6px 0 0;background:var(--field)}
+.hist div{border-bottom:1px dashed var(--line);padding:3px 0;white-space:pre-wrap;word-break:break-word}
+.hist div:last-child{border:0}
+.schema{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.schema .t{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--field)}
+.schema .t b{font-family:var(--mono);font-size:12.5px;color:var(--accent-ink)}
+.schema .t div{font:11.5px/1.6 var(--mono);color:var(--ink2)}
+.schema .t span{color:var(--muted)}
+footer{max-width:1440px;margin:0 auto;padding:6px 28px 30px;font-size:11.5px;color:var(--muted)}
+footer .bar{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--g500),var(--y500));margin-bottom:10px;opacity:.6}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="top-in">
+  <div class="brand">
+    <div class="logo"><img src="data:image/png;base64,/*__LOGO__*/" alt="Petrobras" width="76" height="47"></div>
+    <div>
+      <h1>Petrobras <span id="yrs">2020–2025</span> · Painel de Indicadores</h1>
+      <p id="subInfo">90 indicadores · 9 temas · base consolidada a partir de relatórios oficiais (RI, ANP, B3)</p>
+    </div>
+    <div class="spacer"></div>
+    <button class="chip-data" id="dataChip" hidden title="Ir para Dados & SQL">● Dados editados</button>
+    <span class="pill-info">Análise independente · não é material oficial da Petrobras</span>
+    <button class="theme-btn" id="themeBtn" aria-label="Alternar tema"></button>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Páginas"></nav>
+</div></div>
+
+<div class="fbar"><div class="fbar-in">
+  <div class="f"><label for="fRef">Ano de referência</label><select id="fRef"></select></div>
+  <div class="f"><label>Período</label><div class="range"><select id="fFrom" aria-label="De"></select>até<select id="fTo" aria-label="Até"></select></div></div>
+  <div class="f"><label>Moeda</label><div class="seg" id="fCur"><button data-v="BRL" class="on">R$</button><button data-v="USD">US$</button></div></div>
+  <div class="f"><label>Lucro</label><div class="seg" id="fLucro"><button data-v="cont" class="on">Contábil</button><button data-v="rec">Recorrente</button></div></div>
+  <div class="f"><label for="fBase">Ano-base (índice/CAGR)</label><select id="fBase"></select></div>
+  <button class="btn" id="fReset">Limpar filtros</button>
+  <span class="hint">Dica: clique num ano do eixo de qualquer gráfico para torná-lo o ano de referência.</span>
+</div></div>
+
+<main>
+<!-- ===================== P1 ===================== -->
+<section class="page" id="p1">
+  <div class="hero" id="hero">
+    <div class="ov"></div>
+    <div class="in">
+      <span class="eyebrow">Visão geral · resumo executivo</span>
+      <h2>Do choque de 2020 ao pico de 2022, e agora a virada para investimento</h2>
+      <p>Seis anos de Petrobras em uma tela: preço do petróleo, resultado, caixa, dividendos, produção, refino, ESG e impacto no Brasil.</p>
+      <div class="stories">
+        <div class="story"><b>2022, o pico</b>Brent de US$ 101, lucro de R$ 188 bi e dividendos de R$ 216 bi, acima do FCL (0,95x).</div>
+        <div class="story"><b>2023–25, a virada</b>CAPEX de US$ 9,8 para 20,3 bi, FCL de R$ 206 para 92 bi e DL/EBITDA de 0,63x para 1,42x.</div>
+        <div class="story"><b>Pré-sal no centro</b>De 66% para 82% da produção, enquanto a fatia na produção nacional cai de 78% para 64%.</div>
+      </div>
+    </div>
+    <span class="credit">Foto: Acervo de Imagens Petrobras</span>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="pfilters">
+    <span class="t">Filtros da página</span>
+    <div class="f"><label for="fHm">Heatmap · conjunto</label><select id="fHm"></select></div>
+    <label class="chk"><input type="checkbox" id="fLog"> Índice em escala log</label>
+  </div>
+  <div class="grid">
+    <article class="card w3" data-id="c_index" data-h="tall" data-title="Índice base 100: o que andou junto?" data-sub="Cada série = 100 no ano-base escolhido no filtro" data-note="Com ano-base 2020 o lucro explode no índice (base deprimida pela pandemia). Use 2021 ou a escala log."></article>
+    <article class="card w3" data-id="c_heat" data-h="tall" data-title="Heatmap de variação anual" data-sub="Variação contra o ano anterior · azul = alta, laranja = queda · indicadores em % mostram Δ em p.p." data-note="Só as variações de 20% ou mais ganham rótulo; o resto fica no tooltip e na tabela. Não é juízo de bom/ruim: alta de emissões ou dívida também fica azul."></article>
+  </div>
+</section>
+
+<!-- ===================== P2 ===================== -->
+<section class="page" id="p2">
+  <div class="banner" data-img="REF1"><div class="in"><h2>Macro e resultado</h2><p>Quanto do resultado é explicado pelo Brent e pelo câmbio? Margens, lucro contábil × recorrente e rentabilidade por barril.</p></div><span class="credit">Foto: Acervo de Imagens Petrobras</span></div>
+  <div class="insights"><h4>Leitura rápida</h4><ul>
+    <li>A receita acompanha o Brent em R$: sai de R$ 272 bi (2020), vai a R$ 641 bi no pico de 2022 e fica perto de R$ 500 bi de 2023 a 2025.</li>
+    <li>A margem EBITDA ficou entre 51% e 53% de 2020 a 2023, caiu para 44% em 2024 e voltou a 48% em 2025.</li>
+    <li>2024 é o ponto fora da curva: lucro contábil de R$ 36,6 bi contra R$ 103,0 bi recorrente (efeito cambial em operações entre empresas do grupo).</li>
+    <li>O EBITDA por barril passa de ~US$ 67/boe em 2022 para ~US$ 39/boe em 2025: a empresa captura menos do preço.</li>
+  </ul></div>
+  <div class="grid">
+    <article class="card w3" data-id="c_rec" data-h="xtall" data-title="Receita e EBITDA × Brent" data-sub="Painéis empilhados com o mesmo eixo de anos (sem eixo duplo)"></article>
+    <article class="card w3" data-id="c_scatter" data-h="xtall" data-title="Sensibilidade: Brent × lucro" data-sub="Cada ponto é um ano · o lucro segue o filtro Contábil/Recorrente" data-note="Com 6 pontos a leitura é descritiva: não use para projetar."></article>
+    <article class="card w2" data-id="c_marg" data-title="Margens" data-sub="Bruta, EBITDA ajustado e líquida (segue o filtro de lucro)"></article>
+    <article class="card w2" data-id="c_lucros" data-title="Lucro contábil × recorrente" data-sub="O gap mostra o peso dos eventos não recorrentes" data-note="2020–2022: 'recorrente'; 2023–2025: 'sem eventos exclusivos'."></article>
+    <article class="card w2" data-id="c_boe" data-title="EBITDA por barril × Brent" data-sub="EBITDA ÷ (produção × 365) · mesma unidade, um só eixo" data-note="Captura = EBITDA/boe ÷ Brent. Produção inclui gás (boe)."></article>
+    <article class="card w6" data-id="c_elast" data-h="short" data-title="Elasticidade ao Brent" data-sub="Variação % da receita e do EBITDA ÷ variação % do Brent (na moeda escolhida)" data-note="Quando o Brent varia pouco (ex.: 2024), a razão explode. Leitura só descritiva."></article>
+  </div>
+</section>
+
+<!-- ===================== P3 ===================== -->
+<section class="page" id="p3">
+  <div class="banner" data-img="GAS0"><div class="in"><h2>Caixa e alocação de capital</h2><p>Para onde foi o caixa operacional: investimento, dividendos ou dívida?</p></div><span class="credit">Foto: Acervo de Imagens Petrobras</span></div>
+  <div class="pfilters">
+    <span class="t">Filtros da página</span>
+    <label class="chk"><input type="checkbox" id="fShift" checked> Comparar CAPEX do ano t com o plano publicado em t−1</label>
+  </div>
+  <div class="insights"><h4>Leitura rápida</h4><ul>
+    <li>Em 2022 os dividendos do exercício (R$ 215,8 bi) superaram o FCL (R$ 205,6 bi): cobertura de 0,95x.</li>
+    <li>O CAPEX foi de US$ 8,1 bi (2020) para US$ 20,3 bi (2025) e já consome 57% do FCO (eram 20% em 2022).</li>
+    <li>O FCL caiu de R$ 205,6 bi (2022) para R$ 91,6 bi (2025).</li>
+    <li>A dívida líquida voltou a US$ 60,6 bi e o DL/EBITDA subiu de 0,63x para 1,42x.</li>
+  </ul></div>
+  <div class="grid">
+    <article class="card w3" data-id="c_wf" data-h="tall" data-title="Cascata do caixa no ano de referência" data-sub="FCO → CAPEX → outros → FCL → dividendos → saldo" data-note="¹ Outros = FCL reportado − (FCO − CAPEX): desinvestimentos, recebimentos etc. ² Dividendos referentes ao exercício (competência), não necessariamente pagos no ano."></article>
+    <article class="card w3" data-id="c_alloc" data-h="tall" data-title="Destino do FCO" data-sub="CAPEX e dividendos como % do fluxo de caixa operacional"></article>
+    <article class="card w2" data-id="c_cob" data-title="Cobertura de dividendos pelo FCL" data-sub="Abaixo de 1,0x: dividendos maiores que o FCL"></article>
+    <article class="card w2" data-id="c_div" data-h="tall" data-title="Endividamento" data-sub="Dívida bruta e líquida (saldos convertidos pelo câmbio de fim de ano) e DL/EBITDA" data-note="Inclui arrendamentos (IFRS 16)."></article>
+    <article class="card w2" data-id="c_capex" data-h="tall" data-title="CAPEX realizado × plano" data-sub="Barras: realizado · marcador: média anual do plano de 5 anos" data-note="Os planos cobrem os 5 anos seguintes à divulgação (2021-25 publicado em 2020, e assim por diante). Por isso a comparação padrão é com t−1."></article>
+  </div>
+</section>
+
+<!-- ===================== P4 ===================== -->
+<section class="page" id="p4">
+  <div class="banner" data-img="TRA10"><div class="in"><h2>Mercado e acionista</h2><p>Cotação, valor de mercado, múltiplos e proventos.</p></div><span class="credit">Foto: Acervo de Imagens Petrobras</span></div>
+  <div class="insights"><h4>Leitura rápida</h4><ul>
+    <li>Em 2022 a ação negociou a P/L de 1,8x e EV/EBITDA de 1,6x, com dividend yield de 63%: desconto extremo.</li>
+    <li>2023 foi o único ano de alta forte da PETR4 (+52% no preço, sem proventos).</li>
+    <li>O payout passa de 100% do lucro contábil em 2020, 2022 e 2024. Em 2024 foi de 202%, mas de 72% do lucro recorrente.</li>
+    <li>O DPA calculado usa ações constantes e fica ~1% abaixo do oficial por causa das recompras.</li>
+  </ul></div>
+  <div class="grid">
+    <article class="card w3" data-id="c_cot" data-h="tall" data-title="Cotação PETR4 e valor de mercado" data-sub="Fechamento do ano · preço nominal sem ajuste por proventos"></article>
+    <article class="card w3" data-id="c_mult" data-h="tall" data-title="Múltiplos" data-sub="P/L (segue o filtro de lucro) e EV/EBITDA ajustado"></article>
+    <article class="card w2" data-id="c_dy" data-title="Dividend yield" data-sub="Dividendos + JCP do exercício ÷ valor de mercado de fim de ano"></article>
+    <article class="card w2" data-id="c_pay" data-title="Payout em três bases" data-sub="Dividendos ÷ lucro contábil, lucro recorrente e FCL"></article>
+    <article class="card w2" data-id="c_lpa" data-title="LPA × DPA" data-sub="Por ação, com 13,04 bi de ações (constante)"></article>
+  </div>
+</section>
+
+<!-- ===================== P5 ===================== -->
+<section class="page" id="p5">
+  <div class="banner" data-img="EP2"><div class="in"><h2>Upstream · exploração e produção</h2><p>Produção, pré-sal, reservas e o peso da Petrobras na produção nacional.</p></div><span class="credit">Foto: Acervo de Imagens Petrobras</span></div>
+  <div class="insights"><h4>Leitura rápida</h4><ul>
+    <li>O pré-sal sobe de 65,6% para 81,9% da produção, e 2025 é recorde: 2.990 mil boe/d.</li>
+    <li>As reservas provadas vão de 8,8 para 12,1 bi boe, e o R/P de 8,5 para 11,1 anos (o oficial de 2025 é 12,5).</li>
+    <li>A reposição de reservas fica acima de 100% desde 2021. O valor de 2020 (26%) reflete o Brent baixo no critério SEC.</li>
+    <li>A produção nacional cresce 28% (2.940 → 3.770 mil bbl/d), mas a fatia da Petrobras cai de 77,7% para 63,6%.</li>
+  </ul></div>
+  <div class="grid">
+    <article class="card w3" data-id="c_prod" data-h="tall" data-title="Produção própria: pré-sal × demais" data-sub="mil boe/d · e participação do pré-sal"></article>
+    <article class="card w3" data-id="c_res" data-h="tall" data-title="Reservas provadas e R/P" data-sub="Critério SEC · R/P = reservas ÷ produção anual" data-note="R/P implícito da base; o oficial usa outra base (2025: 12,5 anos)."></article>
+    <article class="card w3" data-id="c_rep" data-title="Índice de reposição de reservas" data-sub="Acima de 100%: repõe mais do que produz" data-note="Aproximação da base. Oficiais: 2021 = 219%, 2023 = 168%, 2025 = 175%."></article>
+    <article class="card w3" data-id="c_anp" data-h="tall" data-title="Brasil (ANP) × Petrobras" data-sub="Produção de petróleo, mil bbl/d, e participação da Petrobras"></article>
+  </div>
+</section>
+
+<!-- ===================== P6 ===================== -->
+<section class="page" id="p6">
+  <div class="banner" data-img="REF2"><div class="in"><h2>Downstream · refino e comercialização</h2><p>Utilização das refinarias, mix de derivados, autossuficiência e comércio exterior.</p></div><span class="credit">Foto: Acervo de Imagens Petrobras</span></div>
+  <div class="pfilters">
+    <span class="t">Filtros da página</span>
+    <div class="f"><label for="fDer">Derivado em destaque</label><select id="fDer"></select></div>
+  </div>
+  <div class="insights"><h4>Leitura rápida</h4><ul>
+    <li>O FUT sobe de 79% para 91–93%, mesmo com capacidade de referência menor após as vendas de RLAM e REMAN.</li>
+    <li>Diesel + gasolina + QAV passam de 61,8% para 68,4% da produção: o mix está mais nobre.</li>
+    <li>As vendas de QAV quase dobram (60 → 117 mil bbl/d) e as de óleo combustível caem à metade (40 → 20).</li>
+    <li>No GLP o refino cobre só ~53% das vendas, o caso mais claro de dependência de importação.</li>
+  </ul></div>
+  <div class="grid">
+    <article class="card w2" data-id="c_fut" data-title="Fator de utilização do refino (FUT)" data-sub="% da capacidade de referência" data-note="Capacidade caiu após RLAM (2021) e REMAN (2022): 1.813 mil bbl/d em 2024–25."></article>
+    <article class="card w2" data-id="c_mixp" data-title="Mix de produção de derivados" data-sub="% do total produzido"></article>
+    <article class="card w2" data-id="c_mixv" data-title="Mix de vendas no mercado interno" data-sub="% do total vendido"></article>
+    <article class="card w2" data-id="c_slope" data-h="tall" data-title="Vendas por derivado: início × fim do período" data-sub="mil bbl/d · as pontas seguem o filtro de período"></article>
+    <article class="card w2" data-id="c_ratio" data-h="tall" data-title="Produção ÷ vendas por derivado" data-sub="No ano de referência · abaixo de 100% = completa com importação" data-note="Eixo limitado a 200%; ▸ indica valor maior (óleo combustível é quase todo exportado)."></article>
+    <article class="card w2" data-id="c_ratio_ts" data-h="tall" data-title="Autossuficiência ao longo do tempo" data-sub="Derivado em destaque × total de derivados"></article>
+    <article class="card w6" data-id="c_comex" data-title="Comércio exterior" data-sub="mil bbl/d · exportações (acima), importações (abaixo) e saldo" data-note="2025: exportação de petróleo recorde, 765 mil bbl/d (999 mil no 4T25)."></article>
+  </div>
+</section>
+
+<!-- ===================== P7 ===================== -->
+<section class="page" id="p7">
+  <div class="banner" data-img="REN0"><div class="in"><h2>ESG · emissões, segurança e pessoas</h2><p>Emissões absolutas e intensidades contra as metas, acidentes, força de trabalho e diversidade.</p></div><span class="credit">Foto: Acervo de Imagens Petrobras</span></div>
+  <div class="insights"><h4>Leitura rápida</h4><ul>
+    <li>As emissões vão de 62 mi tCO2e (2021, despacho termelétrico na crise hídrica) para 47 mi.</li>
+    <li>A intensidade do E&amp;P está abaixo da meta de 15 desde 2022, e o metano cai de 0,45 para 0,23 (meta 2030: 0,20).</li>
+    <li>A segurança piorou: TAR de 0,56 para 0,71 e 17 fatalidades em 6 anos (nenhuma em 2020).</li>
+    <li>Terceirizados crescem 40% e próprios só 3%. Mulheres na liderança: de 19,1% para 25,2%.</li>
+  </ul></div>
+  <div class="grid">
+    <article class="card w2" data-id="c_emis" data-title="Emissões operacionais de GEE" data-sub="Escopos 1 e 2 · mi tCO2e" data-note="Referência 2015: 78,2 mi tCO2e."></article>
+    <article class="card w4" data-id="c_int" data-title="Intensidades × metas" data-sub="Linha horizontal = meta da companhia"></article>
+    <article class="card w2" data-id="c_seg" data-h="tall" data-title="Segurança" data-sub="TAR (por milhão de homens-hora) e fatalidades"></article>
+    <article class="card w2" data-id="c_pes" data-h="tall" data-title="Força de trabalho" data-sub="Empregados próprios × terceirizados"></article>
+    <article class="card w2" data-id="c_mul" data-h="tall" data-title="Mulheres na liderança" data-sub="% dos cargos de liderança"></article>
+    <article class="card w6" data-id="c_amb" data-h="short" data-title="Água e vazamentos" data-sub="Captação de água doce (mi m³) e volume vazado de óleo e derivados (m³)"></article>
+  </div>
+</section>
+
+<!-- ===================== P8 ===================== -->
+<section class="page" id="p8">
+  <div class="banner" data-img="TRA1"><div class="in"><h2>Impacto no Brasil</h2><p>Tributos, royalties e participações governamentais, e produtividade da força de trabalho.</p></div><span class="credit">Foto: Acervo de Imagens Petrobras</span></div>
+  <div class="kpis light" id="kpis8"></div>
+  <div class="insights"><h4>Leitura rápida</h4><ul>
+    <li>Tributos + participações governamentais vão de R$ 128,7 bi para R$ 277,6 bi: R$ 760 mi por dia em 2025.</li>
+    <li>A esfera estadual (principalmente ICMS) é a maior parcela: R$ 113,8 bi em 2025.</li>
+    <li>A razão tributos ÷ receita mistura bases: a receita no IFRS é líquida de impostos sobre vendas. Não é "carga tributária".</li>
+    <li>A receita por trabalhador (próprios + terceirizados) sobe de R$ 1,9 mi para R$ 2,8 mi.</li>
+  </ul></div>
+  <div class="grid">
+    <article class="card w3" data-id="c_trib" data-h="tall" data-title="Tributos e participações por esfera" data-sub="Pagos no ano"></article>
+    <article class="card w3" data-id="c_tribrec" data-h="tall" data-title="Tributos pagos ÷ receita líquida" data-sub="E tributos por barril produzido" data-note="Ressalva: a receita de vendas no IFRS é líquida de tributos sobre vendas, e os tributos pagos incluem ICMS recolhido. As bases são diferentes."></article>
+    <article class="card w6" data-id="c_prodtrab" data-h="short" data-title="Produtividade por trabalhador" data-sub="Receita e FCL ÷ força de trabalho total (próprios + terceirizados)"></article>
+  </div>
+</section>
+
+<!-- ===================== P10 ===================== -->
+<section class="page" id="p10">
+  <div class="banner" data-img="GAS1"><div class="in"><h2>Dados &amp; SQL</h2><p>Atualize a base direto aqui: carregue um .db novo ou rode SELECT, UPDATE, INSERT e DELETE. O dashboard recalcula e se redesenha na hora.</p></div><span class="credit">Foto: Acervo de Imagens Petrobras</span></div>
+  <div class="grid">
+    <article class="card w4" data-id="sqlbox" data-title="Console SQL (SQLite no navegador)" data-sub="Ctrl + Enter executa · várias instruções separadas por ; · em caso de erro, nada é aplicado"></article>
+    <article class="card w2" data-id="dbstat" data-title="Base atual" data-sub="Origem, tamanho e ações sobre o arquivo"></article>
+    <article class="card w6" data-id="schema" data-title="Esquema da base" data-sub="Tabelas, views e colunas. O dashboard identifica cada indicador pelo id (1 a 90)."></article>
+  </div>
+</section>
+</main>
+
+<footer><div class="bar"></div>
+  Análise independente para fins de estudo e portfólio. Dados: base <code>petrobras_2020_2025.db</code>, compilada de relatórios da Petrobras (RI), ANP, BCB e B3 (lista abaixo).
+  Banco de dados: SQLite no navegador (sql.js), sem servidor. Imagens: <a href="https://petrobras.fotoware.cloud/fotoweb/" target="_blank" rel="noopener">Acervo de Imagens Petrobras</a>, carregadas on-line. Sem internet, os banners usam só o degradê.
+  Gráficos: Apache ECharts (embutido).
+  <details style="margin-top:8px"><summary style="cursor:pointer">Fontes dos dados</summary><ul class="list" id="srcList" style="columns:2;column-gap:32px;margin-top:6px"></ul></details>
+</footer>
+
+<script>/*__ECHARTS__*/</script>
+<script>/*__SQLJS__*/</script>
+<script>const SQL_WASM_B64="/*__WASM__*/";const DB_B64="/*__DB__*/";</script>
+<script>
+/*__APP__*/
+</script>
+</body>
+</html>

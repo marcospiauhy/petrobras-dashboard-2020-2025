@@ -1,0 +1,14 @@
+{
+  "name": "petrobras-dashboard-2020-2025",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dashboard interativo de indicadores da Petrobras (2020–2025) em um único HTML, com SQLite no navegador.",
+  "scripts": {
+    "build": "python ../src/build.py"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "echarts": "^5.6.0",
+    "sql.js": "^1.17.0"
+  }
+}
