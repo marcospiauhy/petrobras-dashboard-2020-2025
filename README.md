@@ -4,7 +4,7 @@ Dashboard interativo com **90 indicadores da Petrobras de 2020 a 2025**: preço 
 
 É **um único arquivo HTML** que funciona offline. A base de dados é um SQLite que roda dentro do navegador, e dá para editar com SQL na própria página.
 
-**[▶ Abrir o dashboard](https://SEU-USUARIO.github.io/petrobras-dashboard-2020-2025/)** · [Vídeo de demonstração](docs/demo.mp4)
+**[▶ Abrir o dashboard](https://marcospiauhy.github.io/petrobras-dashboard-2020-2025/)** · [Vídeo de demonstração](docs/demo.mp4)
 
 ![Visão geral](docs/img/01-visao-geral.png)
 
